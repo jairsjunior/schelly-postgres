@@ -1,0 +1,15 @@
+version: '3.5'
+
+services:
+
+  backy2-api:
+    build: .
+    ports:
+      - 7070:7070
+    environment:
+      - LOG_LEVEL=debug
+      - PRE_BACKUP_COMMAND=dd if=/dev/zero of=/backup-source/TESTFILE bs=100MB count=2
+      - POST_BACKUP_COMMAND=rm /backup-source/TESTFILE
+      - MONITOR_HOSTS=localhost
+      - PROTECT_YOUNG_BACKUP_DAYS=0
+      - BACKUP_FILE_PATH=/var/backups

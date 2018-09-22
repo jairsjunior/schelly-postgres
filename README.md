@@ -35,16 +35,16 @@ networks:
 ```
 
 ```shell
-#create a new backup
+# create a new backup
 curl -X POST http://localhost:7070/backups
 
-#list existing backups
+# list existing backups
 curl -X GET http://localhost:7070/backups
 
-#get info about an specific backup
+# get info about an specific backup
 curl _X GET http://localhost:7070/backups/abc123
 
-#remove existing backup
+# remove existing backup
 curl -X DELETE localhost:7070/backups/abc123
 
 ```

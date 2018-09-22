@@ -92,7 +92,7 @@ Options controlling the output content:
   --create                 include commands to create database in dump         -> value used: --create  
 ```
 
-## `pg_dump` parameters that currently can't be set but will soon be:
+## `pg_dump` parameters that currently can't be set
 ```
   --schema=SCHEMA          dump the named schema(s) only  
   --exclude-schema=SCHEMA  do NOT dump the named schema(s)  

@@ -53,7 +53,7 @@ curl -X DELETE localhost:7070/backups/abc123
 
 As in https://github.com/flaviostutz/schelly#webhook-spec
 
-## `pg_dump` parameters that can be set:
+## `pg_dump` parameters that can be set
 
 ```shell
 General options:

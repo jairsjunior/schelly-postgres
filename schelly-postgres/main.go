@@ -14,7 +14,7 @@ func main() {
 
 	sugar.Infof("====Starting Postgres Schelly Backup Repo v.1====")
 
-	postgresBackuper := postgresrepo.PostgresBackuper{}
+	postgresBackuper := PostgresBackuper{}
 	err := schellyhook.Initialize(postgresBackuper)
 
 	if err != nil {

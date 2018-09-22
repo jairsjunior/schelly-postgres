@@ -1,6 +1,57 @@
 # schelly-postgres
 
+# Usage
 
+docker-compose .yml
+
+```yml
+version: '3.5'
+
+services:
+
+  db:
+    image: postgres
+    environment:
+      - POSTGRES_DB=schelly
+      - POSTGRES_PASSWORD=postgres
+
+  schelly-postgres-repo:
+    image: tiagostutz/schelly-postgres
+    build: .
+    ports:
+      - 7070:7070
+    environment:
+      - LOG_LEVEL=debug
+      - BACKUP_FILE_PATH=/var/backups
+      - DATABASE_NAME=schelly
+      - DATABASE_CONNECTION_HOST=db
+      - DATABASE_CONNECTION_PORT=5432
+      - DATABASE_AUTH_USERNAME=postgres
+      - DATABASE_AUTH_PASSWORD=postgres
+
+networks:
+  default:
+    name: schelly-postgres-net
+```
+
+```shell
+#create a new backup
+curl -X POST http://localhost:7070/backups
+
+#list existing backups
+curl -X GET http://localhost:7070/backups
+
+#get info about an specific backup
+curl _X GET http://localhost:7070/backups/abc123
+
+#remove existing backup
+curl -X DELETE localhost:7070/backups/abc123
+
+```
+
+# REST Endpoints
+
+As in https://github.com/flaviostutz/schelly#webhook-spec
 
 `pg_dump` parameters that can be set:
 
@@ -29,13 +80,13 @@ Schelly postgres repo custom options:
 ```
 General options:
   --format=c|d|t|p         output file format (custom, directory, tar,
-                               plain text (default))                               -> value used: tar
-  --jobs=NUM               use this many parallel jobs to dump                 -> value used: 1
-  --verbose                verbose mode                                        -> value used: --verbose  
-  --compress=0-9           compression level for compressed formats            -> value used: 9
-  --column-inserts             dump data as INSERT commands with column names      -> value used: --column-inserts
-  --inserts                    dump data as INSERT commands, rather than COPY      -> value used: --inserts  
-  --quote-all-identifiers      quote all identifiers, even if not key words        -> value used: --quote-all-identifiers
+                               plain text (default))                                 -> value used: p
+  --jobs=NUM               use this many parallel jobs to dump                      -> value used: 1
+  --verbose                verbose mode                                             -> value used: --verbose  
+  --compress=0-9           compression level for compressed formats                 -> value used: 9
+  --column-inserts             dump data as INSERT commands with column names       -> value used: --column-inserts
+  --inserts                    dump data as INSERT commands, rather than COPY       -> value used: --inserts  
+  --quote-all-identifiers      quote all identifiers, even if not key words         -> value used: --quote-all-identifiers
 
 Options controlling the output content:
   --clean                  clean (drop) database objects before recreating     -> value used: --clean  

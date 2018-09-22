@@ -2,20 +2,26 @@ version: '3.5'
 
 services:
 
-  postgres-repo-api:
-    image: tiagostutz/schelly-postgres:latest
+  db:
+    image: postgres
+    environment:
+      - POSTGRES_DB=schelly
+      - POSTGRES_PASSWORD=postgres
+
+  schelly-postgres-repo:
+    image: tiagostutz/schelly-postgres
     build: .
     ports:
       - 7070:7070
     environment:
       - LOG_LEVEL=debug
-      # - PRE_BACKUP_COMMAND=dd if=/dev/zero of=/backup-source/TESTFILE bs=100MB count=2
-      # - POST_BACKUP_COMMAND=rm /backup-source/TESTFILE
-      - MONITOR_HOSTS=localhost
-      - PROTECT_YOUNG_BACKUP_DAYS=0
       - BACKUP_FILE_PATH=/var/backups
       - DATABASE_NAME=schelly
-      - DATABASE_CONNECTION_HOST=postgres
+      - DATABASE_CONNECTION_HOST=db
       - DATABASE_CONNECTION_PORT=5432
       - DATABASE_AUTH_USERNAME=postgres
       - DATABASE_AUTH_PASSWORD=postgres
+
+networks:
+  default:
+    name: schelly-postgres-net

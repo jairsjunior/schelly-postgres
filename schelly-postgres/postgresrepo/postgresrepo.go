@@ -13,6 +13,7 @@ import (
 	"go.uber.org/zap"
 )
 
+// backups directory where the backup files will be placed
 var backupsDir *string
 
 // General options:
@@ -30,12 +31,11 @@ var encoding *string // dump the data in encoding ENCODING
 // var excludeTableData *string[] // do NOT dump data for the named table(s)
 
 // Connection options:
-var dbname *string     // database to dump
-var host *string       // database server host or socket directory
-var port *int          // database server port number
-var username *string   // connect as specified database user
-var password *string   // force password prompt (should happen automatically)
-var noPassword *string // never prompt for password
+var dbname *string   // database to dump
+var host *string     // database server host or socket directory
+var port *int        // database server port number
+var username *string // connect as specified database user
+var password *string // force password prompt (should happen automatically)
 
 //PostgresBackuper sample backuper
 type PostgresBackuper struct{}
@@ -46,34 +46,32 @@ func (sb PostgresBackuper) Init() error {
 	defer logger.Sync() // flushes buffer, if any
 	sugar := logger.Sugar()
 
-	backupsDir := os.Getenv("BACKUP_DIR")
-	if backupsDir == "" {
-		return fmt.Errorf("BACKUP_DIR environment var must be defined")
-	}
-
 	info, err := schellyhook.ExecShell("pg_dump --version")
 	if err != nil {
 		sugar.Errorf("Couldn't retrieve pg_dump version. err=%s", err)
 		return err
 	}
 
+	if *backupsDir == "" {
+		return fmt.Errorf("backup-dir arg must be defined")
+	}
 	if strings.Contains(*fileName, "--") {
 		return fmt.Errorf("Cannot use `--` on file name. Please change the filename and try again; you can still use `-`")
 	}
 	if *host == "" {
-		return fmt.Errorf("database host must be set. It can be an IP address or a domain name")
+		return fmt.Errorf("database host arg must be set. It can be an IP address or a domain name")
 	}
 	if *port <= 0 {
-		return fmt.Errorf("database port must be a valid value, such as 5432")
+		return fmt.Errorf("database port arg must be a valid value, such as 5432")
 	}
 	if *dbname == "" {
-		return fmt.Errorf("dbname must be set")
+		return fmt.Errorf("dbname arg must be set")
 	}
 	if *username == "" {
-		return fmt.Errorf("username cannot be empty")
+		return fmt.Errorf("username arg must be set")
 	}
 	if *password == "" {
-		return fmt.Errorf("password cannot be empty")
+		return fmt.Errorf("password arg must be set")
 	}
 
 	pgPassStringBytes := []byte(*host + ":" + strconv.Itoa(*port) + ":" + *username + ":" + *dbname + ":" + *password)
@@ -103,7 +101,8 @@ func (sb PostgresBackuper) RegisterFlags() error {
 	sugar := logger.Sugar()
 
 	// General options:
-	fileName = flag.String("file-name", "/var/backups/database", "--file-name=FILENAME -> output file path and name")
+	backupsDir = flag.String("backup-dir", "/var/backups/database", "--backup-dir=FILENAME -> output file path and name")
+	fileName = flag.String("file-name", "database_dump", "--file-name=FILENAME -> output file path and name")
 	splitFile = flag.Bool("split-file", false, "--split-file -> split the backup on multiple files on a directory (pg_dump --format=d)")
 
 	// Options controlling the output content:
@@ -122,7 +121,6 @@ func (sb PostgresBackuper) RegisterFlags() error {
 	port = flag.Int("port", 5432, "-port=PORT -> database server port number")
 	username = flag.String("username", "postgres", "--username=NAME -> connect as specified database user")
 	password = flag.String("password", "", " --password -> password to be placed on ~/.pgpass")
-	noPassword = flag.String("no-password", "", "--no-password -> never prompt for password")
 
 	// flag.Parse() //invoked by the hook
 	sugar.Infof("Flags registration completed")

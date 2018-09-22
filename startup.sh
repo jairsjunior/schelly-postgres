@@ -9,5 +9,9 @@ schelly-postgres \
     --log-level=$LOG_LEVEL \
     --pre-post-timeout=$PRE_POST_TIMEOUT \
     --pre-backup-command="$PRE_BACKUP_COMMAND" \
-    --post-backup-command="$POST_BACKUP_COMMAND"
-    --file="$BACKUP_FILE_PATH" \
+    --post-backup-command="$POST_BACKUP_COMMAND" \
+    --dbname="$DATABASE_NAME" \
+    --host="$DATABASE_CONNECTION_HOST" \
+    --port="$DATABASE_CONNECTION_PORT" \
+    --username="$DATABASE_AUTH_USERNAME" \
+    --password="$DATABASE_AUTH_PASSWORD" \

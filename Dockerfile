@@ -3,8 +3,10 @@ FROM golang:1.10 AS BUILD
 # doing dependency build separated from source build optimizes time for developer, but is not required
 # install external dependencies first
 # ADD go-plugins-helpers/Gopkg.toml $GOPATH/src/go-plugins-helpers/
+WORKDIR $GOPATH/src/schelly-postgres
+
 ADD /main.go $GOPATH/src/schelly-postgres/main.go
-RUN go get -v $GOPATH/src/schelly-postgres
+RUN go get -v schelly-postgres
 
 # now build source code
 ADD schelly-postgres $GOPATH/src/schelly-postgres

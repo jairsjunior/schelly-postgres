@@ -14,3 +14,8 @@ services:
       - MONITOR_HOSTS=localhost
       - PROTECT_YOUNG_BACKUP_DAYS=0
       - BACKUP_FILE_PATH=/var/backups
+      - DATABASE_NAME=schelly
+      - DATABASE_CONNECTION_HOST=postgres
+      - DATABASE_CONNECTION_PORT=5432
+      - DATABASE_AUTH_USERNAME=postgres
+      - DATABASE_AUTH_PASSWORD=postgres

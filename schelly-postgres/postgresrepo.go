@@ -4,7 +4,9 @@ import (
 	"flag"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"os"
+	"os/user"
 	"strconv"
 	"strings"
 	"time"
@@ -59,30 +61,34 @@ func (sb PostgresBackuper) Init() error {
 		return fmt.Errorf("Cannot use `--` on file name. Please change the filename and try again; you can still use `-`")
 	}
 	if *host == "" {
-		return fmt.Errorf("database host arg must be set. It can be an IP address or a domain name")
+		return fmt.Errorf("`database host` (--host) arg must be set. It can be an IP address or a domain name")
 	}
 	if *port <= 0 {
-		return fmt.Errorf("database port arg must be a valid value, such as 5432")
+		return fmt.Errorf("`database port` (--port) arg must be a valid value, such as 5432")
 	}
 	if *dbname == "" {
-		return fmt.Errorf("dbname arg must be set")
+		return fmt.Errorf("`dbname` (--dbname) arg must be set")
 	}
 	if *username == "" {
-		return fmt.Errorf("username arg must be set")
+		return fmt.Errorf("`username` (--username) arg must be set")
 	}
 	if *password == "" {
-		return fmt.Errorf("password arg must be set")
+		return fmt.Errorf("`password` (--password) arg must be set")
 	}
 
 	pgPassStringBytes := []byte(*host + ":" + strconv.Itoa(*port) + ":" + *username + ":" + *dbname + ":" + *password)
 
-	err = ioutil.WriteFile("~/.pgpass", pgPassStringBytes, 0644)
+	usr, err := user.Current()
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = ioutil.WriteFile(usr.HomeDir+".pgpass", pgPassStringBytes, 0644)
 	if err != nil {
 		sugar.Errorf("Error writing .pgpass file. err: %s", err)
 		return err
 	}
 
-	pgPassFile, err := ioutil.ReadFile("~/.pgpass")
+	pgPassFile, err := ioutil.ReadFile(usr.HomeDir + ".pgpass")
 	if err != nil {
 		sugar.Errorf("Error reading .pgpass file. err: %s", err)
 		return err
@@ -116,9 +122,9 @@ func (sb PostgresBackuper) RegisterFlags() error {
 	// excludeTableData = flag.Var("exclude-table-data", "", "--exclude-table-data=TABLE -> do NOT dump data for the named table(s)")
 
 	// Connection options:
-	dbname = flag.String("dbname", "", "-dbname=DBNAME -> database to dump")
-	host = flag.String("host", "", "-host=HOSTNAME -> database server host or socket directory")
-	port = flag.Int("port", 5432, "-port=PORT -> database server port number")
+	dbname = flag.String("dbname", "", "--dbname=DBNAME -> database to dump")
+	host = flag.String("host", "", "--host=HOSTNAME -> database server host or socket directory")
+	port = flag.Int("port", 5432, "--port=PORT -> database server port number")
 	username = flag.String("username", "postgres", "--username=NAME -> connect as specified database user")
 	password = flag.String("password", "", " --password -> password to be placed on ~/.pgpass")
 

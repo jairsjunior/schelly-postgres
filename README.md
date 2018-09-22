@@ -49,13 +49,13 @@ curl -X DELETE localhost:7070/backups/abc123
 
 ```
 
-# REST Endpoints
+## REST Endpoints
 
 As in https://github.com/flaviostutz/schelly#webhook-spec
 
-`pg_dump` parameters that can be set:
+## `pg_dump` parameters that can be set:
 
-```
+```shell
 General options:
   --file=FILENAME          output file or directory name
 
@@ -69,7 +69,6 @@ Connection options:
   --host=HOSTNAME      database server host or socket directory (required)
   --port=PORT          database server port number
   --username=NAME      connect as specified database user (defaults to "postgres")
-  --no-password        never prompt for password
 
 Schelly postgres repo custom options:
   --password           password to be placed on ~/.pgpass (required)
@@ -93,13 +92,15 @@ Options controlling the output content:
   --create                 include commands to create database in dump         -> value used: --create  
 ```
 
-`pg_dump` parameters that currently can't be set but will soon be:
+## `pg_dump` parameters that currently can't be set but will soon be:
 ```
   --schema=SCHEMA          dump the named schema(s) only  
   --exclude-schema=SCHEMA  do NOT dump the named schema(s)  
   --table=TABLE            dump the named table(s) only  
   --exclude-table=TABLE    do NOT dump the named table(s)  
-  --exclude-table-data=TABLE   do NOT dump data for the named table(s)  
+  --exclude-table-data=TABLE   do NOT dump data for the named table(s)
+  --no-password        never prompt for password
+  
 ```
 
 # Known limitations

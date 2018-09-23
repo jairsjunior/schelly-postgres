@@ -24,6 +24,7 @@ services:
       - BACKUP_NAME=schelly-pgdump
       - WEBHOOK_URL=http://schelly-postgres-repo:7070/backups
       - BACKUP_CRON_STRING=0 */1 * * * *
+      - RETENTION_MINUTELY=5
       - WEBHOOK_GRACE_TIME=20
 
   schelly-postgres-repo:

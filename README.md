@@ -15,6 +15,17 @@ services:
       - POSTGRES_DB=schelly
       - POSTGRES_PASSWORD=postgres
 
+  schelly:
+    image: flaviostutz/schelly
+    ports:
+      - 8080:8080
+    environment:
+      - LOG_LEVEL=debug
+      - BACKUP_NAME=schelly-pgdump
+      - WEBHOOK_URL=http://schelly-postgres-repo:7070/backups
+      - BACKUP_CRON_STRING=*/5 * * * *
+      - WEBHOOK_GRACE_TIME=20
+
   schelly-postgres-repo:
     image: tiagostutz/schelly-postgres
     build: .

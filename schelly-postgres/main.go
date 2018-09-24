@@ -12,7 +12,7 @@ func main() {
 	defer logger.Sync() // flushes buffer, if any
 	sugar := logger.Sugar()
 
-	sugar.Infof("====Starting Postgres Schelly Backup Repo v.1====")
+	sugar.Infof("====Starting Postgres Schelly Backup Provider v.1====")
 
 	postgresBackuper := PostgresBackuper{}
 	err := schellyhook.Initialize(postgresBackuper)
@@ -22,6 +22,6 @@ func main() {
 		os.Exit(1)
 	}
 
-	sugar.Infof("====Postgres Schelly Backup Repo Started====")
+	sugar.Infof("====Postgres Schelly Backup Provider Started====")
 
 }

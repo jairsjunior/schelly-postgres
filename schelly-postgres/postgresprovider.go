@@ -106,7 +106,7 @@ func (sb PostgresBackuper) Init() error {
 		return fmt.Errorf("Error creating backups `base-dir`. error: %s", err)
 	}
 
-	sugar.Infof("Postgres Repository ready to work. Version: %s", info)
+	sugar.Infof("Postgres Provider ready to work. Version: %s", info)
 
 	return nil
 }
@@ -181,9 +181,9 @@ func (sb PostgresBackuper) CreateNewBackup(apiID string, timeout time.Duration, 
 	if err != nil {
 		status := (*shellContext).CmdRef.Status()
 		if status.Exit == -1 {
-			sugar.Warnf("PostgresRepo pg_dump command timeout enforced (%d seconds)", (status.StopTs-status.StartTs)/1000000000)
+			sugar.Warnf("PostgresProvider pg_dump command timeout enforced (%d seconds)", (status.StopTs-status.StartTs)/1000000000)
 		}
-		sugar.Debugf("PostgresRepo pg_dump error. out=%s; err=%s", out, err.Error())
+		sugar.Debugf("PostgresProvider pg_dump error. out=%s; err=%s", out, err.Error())
 		errorFileBytes := []byte(pgDumpID)
 		errorFilePath := resolveErrorFilePath(apiID)
 		err := ioutil.WriteFile(errorFilePath, errorFileBytes, 0600)
@@ -195,7 +195,7 @@ func (sb PostgresBackuper) CreateNewBackup(apiID string, timeout time.Duration, 
 		return err
 	}
 
-	sugar.Debugf("PostgresRepo pg_dump backup started. Output log:")
+	sugar.Debugf("PostgresProvider pg_dump backup started. Output log:")
 	sugar.Debugf(out)
 	saveDataID(apiID, pgDumpID)
 

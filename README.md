@@ -22,12 +22,12 @@ services:
     environment:
       - LOG_LEVEL=debug
       - BACKUP_NAME=schelly-pgdump
-      - WEBHOOK_URL=http://schelly-postgres-repo:7070/backups
+      - WEBHOOK_URL=http://schelly-postgres-provider:7070/backups
       - BACKUP_CRON_STRING=0 */1 * * * *
       - RETENTION_MINUTELY=5
       - WEBHOOK_GRACE_TIME=20
 
-  schelly-postgres-repo:
+  schelly-postgres-provider:
     image: tiagostutz/schelly-postgres
     build: .
     ports:
@@ -82,7 +82,7 @@ Connection options:
   --port=PORT          database server port number
   --username=NAME      connect as specified database user (defaults to "postgres")
 
-Schelly postgres repo custom options:
+Schelly postgres provider custom options:
   --password           password to be placed on ~/.pgpass (required)
 ```
 
@@ -117,4 +117,4 @@ Options controlling the output content:
 
 # Known limitations
 
-Currently this Repository supports only synchronous backup process
+Currently this Provider supports only synchronous backup process

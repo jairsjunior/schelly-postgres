@@ -1,16 +1,16 @@
-FROM golang:1.10 AS BUILD
+FROM golang:1.12.3 AS BUILD
 
-# doing dependency build separated from source build optimizes time for developer, but is not required
-# install external dependencies first
-# ADD go-plugins-helpers/Gopkg.toml $GOPATH/src/go-plugins-helpers/
-WORKDIR $GOPATH/src/schelly-postgres
+RUN mkdir /schelly-postgres
+WORKDIR /schelly-postgres
 
-ADD /main.go $GOPATH/src/schelly-postgres/main.go
-RUN go get -v schelly-postgres
+ADD go.mod .
+ADD go.sum .
+RUN go mod download
 
-# now build source code
-ADD schelly-postgres $GOPATH/src/schelly-postgres
-RUN go get -v schelly-postgres
+#now build source code
+ADD schelly-postgres/ ./
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -ldflags '-extldflags "-static"' -o /go/bin/schelly-postgres .
+
 
 FROM postgres:10
 

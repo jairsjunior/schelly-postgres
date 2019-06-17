@@ -16,6 +16,11 @@ import (
 	"go.uber.org/zap"
 )
 
+var (
+	isCredentialCreated bool
+	credential          *azblob.SharedKeyCredential
+)
+
 var dataStringSeparator string
 
 // backups directory where the backup files will be placed
@@ -116,6 +121,10 @@ func (sb PostgresBackuper) Init() error {
 	}
 
 	sugar.Infof("Postgres Provider ready to work. Version: %s", info)
+	sugar.Infof("Azure Storage: %b", *azureStorage)
+	sugar.Infof("Azure AccountName: %s", *accountName)
+	sugar.Infof("Azure AccountKey: %s", *accountKey)
+	sugar.Infof("Azure ContainerName: %s", *containerName)
 
 	return nil
 }
@@ -208,6 +217,7 @@ func (sb PostgresBackuper) CreateNewBackup(apiID string, timeout time.Duration, 
 		}
 
 		if *azureStorage {
+			sugar.Debugf("Try to send file to Azure")
 			err = sendFileToAzure(*accountName, *accountKey, *containerName, resolveErrorFilePathAzure(apiID), resolveErrorFilePath(apiID))
 			if err != nil {
 				sugar.Debugf("Send error file to Azure with error: %s", err.Error())
@@ -224,7 +234,7 @@ func (sb PostgresBackuper) CreateNewBackup(apiID string, timeout time.Duration, 
 
 	//## Send file to Azure Storage Blob
 	if *azureStorage {
-		err = sendFileToAzure(*accountName, *accountKey, *containerName, resolveFilePathAzure(apiID, pgDumpID), resolveFilePathAzure(apiID, pgDumpID))
+		err = sendFileToAzure(*accountName, *accountKey, *containerName, resolveFilePathAzure(apiID, pgDumpID), resolveFilePath(apiID, pgDumpID))
 		if err != nil {
 			sugar.Debugf("Send file to Azure with error: %s", err.Error())
 			return fmt.Errorf("Send file to Azure with error: %s", err.Error())
@@ -504,13 +514,18 @@ func connectToAzureContainer(accountName string, accountKey string, containerNam
 	logger, _ := zap.NewDevelopment()
 	defer logger.Sync() // flushes buffer, if any
 	sugar := logger.Sugar()
+	var err error
 
 	// Create a default request pipeline using your storage account name and account key.
 	sugar.Debugf("Connecting with Azure -> AccountName: %s", accountName)
-	credential, err := azblob.NewSharedKeyCredential(accountName, accountKey)
-	if err != nil {
-		sugar.Debugf("Invalid credentials with error: %s", err.Error())
-		return azblob.ContainerURL{}, nil, fmt.Errorf("Invalid credentials with error: %s", err.Error())
+
+	if !isCredentialCreated {
+		credential, err = azblob.NewSharedKeyCredential(accountName, accountKey)
+		if err != nil {
+			sugar.Debugf("Invalid credentials with error: %s", err.Error())
+			return azblob.ContainerURL{}, nil, fmt.Errorf("Invalid credentials with error: %s", err.Error())
+		}
+		isCredentialCreated = true
 	}
 	p := azblob.NewPipeline(credential, azblob.PipelineOptions{})
 
@@ -630,7 +645,7 @@ func listFilesFromAzure(accountName string, accountKey string, containerName str
 			if blobInfo.Deleted {
 				status = "deleted"
 			} else {
-				status = "avaliable"
+				status = "available"
 			}
 
 			sr := schellyhook.SchellyResponse{
@@ -696,13 +711,18 @@ func findFileFromAzure(accountName string, accountKey string, containerName stri
 	blobURL := containerURL.NewBlockBlobURL(fileName)
 	blobInfo, err := blobURL.GetProperties(ctx, azblob.BlobAccessConditions{})
 
+	if err != nil {
+		sugar.Debugf("Error at get properties of: %s", fileName)
+		return &schellyhook.SchellyResponse{}, err
+	}
+
 	id := strings.Split(fileName, dataStringSeparator)[1]
 	dataID := strings.Split(fileName, dataStringSeparator)[2]
 	sizeMB := blobInfo.ContentLength()
 	backupFilePath := blobURL.String()
 
 	sugar.Debugf("Found and opened backup file: %s", backupFilePath)
-	status := blobInfo.Status()
+	status := "available"
 
 	return &schellyhook.SchellyResponse{
 		ID:      id,

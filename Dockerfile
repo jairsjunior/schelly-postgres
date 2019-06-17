@@ -9,11 +9,15 @@ RUN go mod download
 
 #now build source code
 ADD schelly-postgres/ ./
+
+# RUN go test -v postgresprovider_test.go postgresprovider.go
 RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -ldflags '-extldflags "-static"' -o /go/bin/schelly-postgres .
 
 
 FROM postgres:10
 
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get -y --no-install-recommends install ca-certificates curl
+#  && rm -rf /var/cache/apk/*
 EXPOSE 7070
 
 # ENV RESTIC_PASSWORD ''

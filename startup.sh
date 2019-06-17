@@ -15,3 +15,8 @@ schelly-postgres \
     --port="$DATABASE_CONNECTION_PORT" \
     --username="$DATABASE_AUTH_USERNAME" \
     --password="$DATABASE_AUTH_PASSWORD" \
+    --azure-storage="$USE_AZURE_STORAGE" \
+    --account-name="$AZURE_STORAGE_ACCOUNT_NAME" \
+    --account-key="$AZURE_STORAGE_ACCOUNT_KEY" \
+    --container-name="$AZURE_STORAGE_CONTAINER_NAME" \
+

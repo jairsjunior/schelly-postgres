@@ -1,9 +1,9 @@
-version: '3.5'
+version: '3.7'
 
 services:
 
   db:
-    image: postgres
+    image: postgres:10
     environment:
       - POSTGRES_DB=schelly
       - POSTGRES_PASSWORD=postgres
@@ -18,7 +18,8 @@ services:
       - WEBHOOK_URL=http://schelly-postgres-provider:7070/backups
       - BACKUP_CRON_STRING=0 */1 * * * *
       - RETENTION_MINUTELY=5
-      - WEBHOOK_GRACE_TIME=20
+      - WEBHOOK_GRACE_TIME=200
+      - GRACE_TIME_SECONDS=200
 
   schelly-postgres-provider:
     image: tiagostutz/schelly-postgres
@@ -33,6 +34,10 @@ services:
       - DATABASE_CONNECTION_PORT=5432
       - DATABASE_AUTH_USERNAME=postgres
       - DATABASE_AUTH_PASSWORD=postgres
+      - USE_AZURE_STORAGE=false
+      - "AZURE_STORAGE_ACCOUNT_NAME=xxxxxxxxxx"
+      - "AZURE_STORAGE_ACCOUNT_KEY=xxxxxxxxxxx"
+      - "AZURE_STORAGE_CONTAINER_NAME=xxxxxxxxxxx"
 
 networks:
   default:

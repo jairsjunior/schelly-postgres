@@ -35,9 +35,9 @@ services:
       - DATABASE_AUTH_USERNAME=postgres
       - DATABASE_AUTH_PASSWORD=postgres
       - USE_AZURE_STORAGE=false
-      - "AZURE_STORAGE_ACCOUNT_NAME=xxxxxxxxxx"
-      - "AZURE_STORAGE_ACCOUNT_KEY=xxxxxxxxxxx"
-      - "AZURE_STORAGE_CONTAINER_NAME=xxxxxxxxxxx"
+      - AZURE_STORAGE_ACCOUNT_NAME=yourAccountName
+      - AZURE_STORAGE_ACCOUNT_KEY=yourAccountKey
+      - AZURE_STORAGE_CONTAINER_NAME=postgres-backup
 
 networks:
   default:

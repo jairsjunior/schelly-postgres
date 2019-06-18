@@ -10,7 +10,7 @@ version: '3.5'
 services:
 
   db:
-    image: postgres
+    image: postgres:10
     environment:
       - POSTGRES_DB=schelly
       - POSTGRES_PASSWORD=postgres
@@ -40,6 +40,10 @@ services:
       - DATABASE_CONNECTION_PORT=5432
       - DATABASE_AUTH_USERNAME=postgres
       - DATABASE_AUTH_PASSWORD=postgres
+      - USE_AZURE_STORAGE=false
+      - AZURE_STORAGE_ACCOUNT_NAME=yourAccountName
+      - AZURE_STORAGE_ACCOUNT_KEY=yourAccountKey
+      - AZURE_STORAGE_CONTAINER_NAME=postgres-backup
 
 networks:
   default:
@@ -114,6 +118,11 @@ Options controlling the output content:
   --no-password        never prompt for password
   
 ```
+
+## Azure Storage Blob
+Now you can send your backup files to Azure Blob Storage. 
+If you want to activate this feature, just set the environment variable *USE_AZURE_STORAGE* to true, and fill the environment variables *AZURE_STORAGE_ACCOUNT_NAME*, *AZURE_STORAGE_ACCOUNT_KEY* and *AZURE_STORAGE_CONTAINER_NAME* with your credentials.
+
 
 # Known limitations
 

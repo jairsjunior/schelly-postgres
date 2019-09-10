@@ -11,9 +11,9 @@ import (
 
 var (
 	filenameTest      = "test---12345---20190614092818"
-	accountNameTest   = "xxxxxxxxxxxxxxx"
-	accountKeyTest    = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-	containerNameTest = "schelly-test"
+	accountNameTest   = "cephbacky2"
+	accountKeyTest    = "Pim4+QnLVPzWNOhxUaftRcIfduK/aEMvpq8ZqMckDs5jv28jadtzX2i80u1V6BMQmgb4ihGrqFVYunrBelnapA=="
+	containerNameTest = "ceph-backy2-test"
 )
 
 func TestRegisterFlags(t *testing.T) {

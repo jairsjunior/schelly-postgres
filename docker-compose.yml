@@ -22,7 +22,7 @@ services:
       - GRACE_TIME_SECONDS=200
 
   schelly-postgres-provider:
-    image: tiagostutz/schelly-postgres
+    image: jairsjunior/schelly-postgres
     build: .
     ports:
       - 7070:7070
